@@ -1,0 +1,17 @@
+﻿{
+    "version": "1.0.0-*",
+    "description": "Uku.Service Class Library",
+    "authors": [ "Simon" ],
+    "tags": [ "" ],
+    "projectUrl": "",
+    "licenseUrl": "",
+
+    "dependencies": {
+        "Uku.Database": ""
+    },
+
+    "frameworks": {
+        "dnx451": { },
+        "dnxcore50": { }
+    }
+}
