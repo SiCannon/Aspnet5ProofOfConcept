@@ -1,6 +1,10 @@
 ﻿@model HomeIndexViewModel
 
-<h2>Albums</h2>
+@section Title {Index}
+
+<h2 class="some-style">Albums</h2>
+
+
 
 <ul>
     @foreach (var album in Model.Albums)
@@ -8,3 +12,15 @@
         <li><b>@album.Title</b></li>
     }
 </ul>
+
+
+
+<ul>
+    @foreach (var album in Model.Albums)
+    {
+        <li>@album.Title</li>
+    }
+</ul>
+
+<div class="alert alert-info">Boostrapped?</div>
+<div class="label label-warning">This is a warning</div>
