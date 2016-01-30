@@ -1,4 +1,4 @@
-﻿/// <binding Clean='clean' />
+﻿/// <binding AfterBuild='min' Clean='clean' ProjectOpened='watcher' />
 "use strict";
 
 var gulp = require("gulp"),
@@ -57,3 +57,7 @@ gulp.task("min:css", ["less"], function () {
 });
 
 gulp.task("min", ["min:js", "min:css"]);
+
+gulp.task("watcher", function () {
+    gulp.watch(paths.less, ["less"]);
+});
