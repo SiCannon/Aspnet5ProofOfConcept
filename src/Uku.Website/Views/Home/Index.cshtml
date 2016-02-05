@@ -4,23 +4,26 @@
 
 <h2 class="some-style">Albums</h2>
 
+<div class="sub1-style">Source Map Test - sub1 style</div>
+<div class="sub2-style">Source Map Test - sub2 style</div>
 
-
-<ul>
-    @foreach (var album in Model.Albums)
-    {
-        <li><b>@album.Title</b></li>
-    }
-</ul>
-
-
-
-<ul>
-    @foreach (var album in Model.Albums)
-    {
-        <li>@album.Title</li>
-    }
-</ul>
+@foreach (var album in Model.Albums)
+{
+    <div class="album"><i class="fa fa-home"></i> @album.Title</div>
+}
 
 <div class="alert alert-info">Boostrapped?</div>
 <div class="label label-warning">This is a warning</div>
+
+<button onclick="test()" class="btn btn-primary">test</button>
+
+@section scripts {
+    <script>
+        function test() {
+            debugger;
+            var x = scannon.foo(10);
+            console.log(x);
+            return 0;
+        }
+    </script>
+}

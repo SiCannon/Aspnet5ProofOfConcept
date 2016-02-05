@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using Microsoft.AspNet.Mvc;
 using Uku.BusinessLogic.Service;
@@ -21,7 +22,7 @@ namespace Uku.Website.Controllers
         {
             var vm = new HomeIndexViewModel
             {
-                Albums = mapper.Map<List<HomeIndexAlbumViewModel>>(albumService.GetAll())
+                Albums = mapper.Map<List<HomeIndexAlbumViewModel>>(albumService.GetAll().Take(10))
             };
 
             return View(vm);

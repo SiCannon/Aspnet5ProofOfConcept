@@ -38,7 +38,8 @@
 
     "exclude": [
         "wwwroot",
-        "node_modules"
+        "node_modules",
+        "Bower"
     ],
     "publishExclude": [
         "**.user",

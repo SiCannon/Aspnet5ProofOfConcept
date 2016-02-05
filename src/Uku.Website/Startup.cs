@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using Uku.BusinessLogic.Implement;
 using Uku.BusinessLogic.Service;
+using Uku.BusinessLogic.TestData;
 using Uku.Database.Model;
 using Uku.Database.Persist;
 using Uku.Website.Config;
@@ -94,11 +95,9 @@ namespace Uku.Website
 
                 if (db.Albums.Count() == 0)
                 {
-                    db.Albums.Add(new Album { Title = "Pet Sounds" });
-                    db.Albums.Add(new Album { Title = "Abbey Road" });
-                    db.Albums.Add(new Album { Title = "Meddle" });
-                    db.Albums.Add(new Album { Title = "Nevermind" });
-                    db.SaveChanges();
+                    var service = serviceScope.ServiceProvider.GetRequiredService<IAlbumService>();
+                    var atd = new AlbumTestData(service);
+                    atd.CreateAlbums();
                 }
             }
         }

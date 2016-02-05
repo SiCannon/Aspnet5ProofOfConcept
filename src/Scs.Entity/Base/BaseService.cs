@@ -11,14 +11,19 @@
             this.context = context;
         }
 
-        public TEntity Create(TEntity entity)
+        public TEntity Create(TEntity entity, bool commit = true)
         {
-            return context.Create(entity);
+            return context.Create(entity, commit);
         }
 
-        public TEntity Update(TEntity entity)
+        public TEntity Update(TEntity entity, bool commit = true)
         {
-            return context.Update(entity);
+            return context.Update(entity, commit);
+        }
+
+        public void SaveChanges()
+        {
+            context.SaveChanges();
         }
     }
 }
