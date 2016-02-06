@@ -54,8 +54,11 @@ paths.bower.fontawesome = paths.bower.base + "Font-Awesome/";
 
 var path = new pathbuilder().build([
     ["dist", "wwwroot", [
-        ["css", "css"],
-        ["js", "js"]
+        ["css", "css", [
+            ["prod", "site.css"]
+        ]],
+        ["js", "js"],
+        ["fonts", "fonts"]
     ]],
     ["less", "Less", [
         ["all", "**/*.less"],
@@ -65,27 +68,30 @@ var path = new pathbuilder().build([
             ["bootstrap", "uku-bootstrap.less"],
             ["fontawesome", "uku-fontawesome.less"]
         ]]
+    ]],
+    ["bower", "Bower", [
+        ["bootstrap", "bootstrap", [
+            ["fonts", "dist/fonts/*.*"],
+            ["js", "dist/js/bootstrap.js"]
+        ]],
+        ["fontawesome", "Font-Awesome", [
+            ["fonts", "fonts/*.*"]
+        ]]
+        //["jquery", 
     ]]
 ]);
 
-gulp.task("test", function () {
-    console.log(path.less.$dev_src);
-    console.log(path.less.dev_src$);
-});
-
 gulp.task("[watch]", function () {
-    gulp.watch(path.less.lib.$bootstrap, ["less:bootstrap", "less"]);
-    //gulp.watch(path.less.lib.$fontawesome, ["less:fontawesome", "less"]);
-    //gulp.watch(path.less.all, ["less"]);
+    gulp.watch(path.less.$all, ["less:dev"]);
 });
 
 gulp.task("less:prod", ["clean:css"], function () {
-    var src = [paths.less.lib_files].concat(paths.less.dev_src.map(function (x) { return paths.less.base + x; }));
-    return gulp.src(src, { base: paths.less.base })
+    var src = [path.less.lib.$files].concat(path.less.$dev_src);
+    return gulp.src(src, { base: path.$less })
         .pipe(less())
         .pipe(autoprefix())
         .pipe(cssmin())
-        .pipe(concat(paths.less.prod_out))
+        .pipe(concat(path.dist.css.$prod))
         .pipe(gulp.dest("."));
 });
 
@@ -120,7 +126,11 @@ gulp.task("clean:js", function () {
     del.sync([path.dist.$js]);
 });
 
-gulp.task("clean", ["clean:js", "clean:css"]);
+gulp.task("clean:fonts", function () {
+    del.sync([path.dist.$fonts]);
+});
+
+gulp.task("clean", ["clean:js", "clean:css", "clean:fonts"]);
 
 gulp.task("min:js", function () {
     return gulp.src([paths.js, "!" + paths.minJs], { base: "." })
@@ -129,8 +139,12 @@ gulp.task("min:js", function () {
         .pipe(gulp.dest("."));
 });
 
+gulp.task("copy:fonts", ["clean:fonts"], function () {
+    return gulp.src([path.bower.fontawesome.$fonts])
+        .pipe(gulp.dest(path.dist.$fonts));
+});
 
-
-/*gulp.task("copy:fontawesome", function () {
-    //gulp.src(paths.
-});*/
+gulp.task("copy:js", ["clean:js"], function () {
+    return gulp.src([path.bower.bootstrap.$js], { base: path.$bower })
+        .pipe(gulp.dest(path.dist.$js));
+});
