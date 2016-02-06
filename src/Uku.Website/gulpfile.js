@@ -1,4 +1,4 @@
-﻿/// <binding AfterBuild='less' Clean='clean' ProjectOpened='[watch]' />
+/// <binding />
 "use strict";
 
 // patch for autoprefixer "Promise not defined" bug: http://stackoverflow.com/questions/32490328/gulp-autoprefixer-throwing-referenceerror-promise-is-not-defined
@@ -59,7 +59,7 @@ var path = new pathbuilder().build([
     ]],
     ["less", "Less", [
         ["all", "**/*.less"],
-        ["dev_src", ["main.less"]],
+        ["dev_src", ["main.less", "album.less"]],
         ["lib", "lib", [
             ["files", "**/*.less"],
             ["bootstrap", "uku-bootstrap.less"],
@@ -68,69 +68,56 @@ var path = new pathbuilder().build([
     ]]
 ]);
 
-/*paths.root(".", ".", [
-    node("dist", "wwwroot", [
-        node("css", "css", [
-            node("prod_out", "site.css")
-        ]),
-        node("js", "js")
-    ]),
-    node("less", "Less", [
-        node("all", "** /*.less"),
-        list("dev_src", ["main.less"]),
-        node("lib", "lib", [
-            node("files", "** /*.less"),
-            node("bootstrap", "uku-bootstrap.less"),
-            node("fontawesome", "uku-fontawesome.less"),
-        ])
-    ])
-]);*/
-
-gulp.task("[watch]", function () {
-    gulp.watch(paths.less.uku_bootstrap, ["less:bootstrap", "less"]);
-    gulp.watch(paths.less.uku_fontawesome, ["less:fontawesome", "less"]);
-    gulp.watch(paths.less.all, ["less"]);
+gulp.task("test", function () {
+    console.log(path.less.$dev_src);
+    console.log(path.less.dev_src$);
 });
 
-gulp.task("less", function () {
-    if (isDev()) {
-        return gulp.src(paths.less.dev_src, { cwd: paths.less.base })
-            .pipe(less())
-            .pipe(autoprefix())
-            .pipe(gulp.dest(paths.dist.css));
-    }
-    else {
-        var src = [paths.less.lib_files].concat(paths.less.dev_src.map(function (x) { return paths.less.base + x; }));
-        return gulp.src(src, { base: paths.less.base })
-            .pipe(debug())
-            .pipe(less())
-            .pipe(autoprefix())
-            .pipe(cssmin())
-            .pipe(concat(paths.less.prod_out))
-            .pipe(gulp.dest("."));
-    }
+gulp.task("[watch]", function () {
+    gulp.watch(path.less.lib.$bootstrap, ["less:bootstrap", "less"]);
+    //gulp.watch(path.less.lib.$fontawesome, ["less:fontawesome", "less"]);
+    //gulp.watch(path.less.all, ["less"]);
+});
+
+gulp.task("less:prod", ["clean:css"], function () {
+    var src = [paths.less.lib_files].concat(paths.less.dev_src.map(function (x) { return paths.less.base + x; }));
+    return gulp.src(src, { base: paths.less.base })
+        .pipe(less())
+        .pipe(autoprefix())
+        .pipe(cssmin())
+        .pipe(concat(paths.less.prod_out))
+        .pipe(gulp.dest("."));
+});
+
+gulp.task("less:dev", ["less:app", "less:bootstrap", "less:fontawesome"]);
+
+gulp.task("less:app", function () {
+    return gulp.src(path.less.$dev_src, { base: path.$less })
+        .pipe(less())
+        .pipe(autoprefix())
+        .pipe(gulp.dest(path.dist.$css));
 });
 
 gulp.task("less:bootstrap", function () {
-    return gulp.src(paths.less.uku_bootstrap)
+    return gulp.src(path.less.lib.$bootstrap)
         .pipe(less())
         .pipe(autoprefix())
-        .pipe(gulp.dest(paths.dist.css));
+        .pipe(gulp.dest(path.dist.$css));
 });
 
 gulp.task("less:fontawesome", function () {
-    return gulp.src(paths.less.uku_fontawesome)
+    return gulp.src(path.less.lib.$fontawesome)
         .pipe(less())
         .pipe(autoprefix())
-        .pipe(gulp.dest(paths.dist.css));
+        .pipe(gulp.dest(path.dist.$css));
 });
 
-gulp.task("clean:css", function (cb) {
-    rimraf(paths.dist.css, cb);
+gulp.task("clean:css", function () {
+    del.sync([path.dist.$css]);
 });
 
-gulp.task("clean:js", function (cb) {
-    rimraf(paths.concatJsDest, cb);
+gulp.task("clean:js", function () {
+    del.sync([path.dist.$js]);
 });
 
 gulp.task("clean", ["clean:js", "clean:css"]);
@@ -143,10 +130,6 @@ gulp.task("min:js", function () {
 });
 
 
-gulp.task("test", function () {
-    console.log(path.dist.css.$path());
-    console.log(path.less.lib.files.$path());
-});
 
 /*gulp.task("copy:fontawesome", function () {
     //gulp.src(paths.

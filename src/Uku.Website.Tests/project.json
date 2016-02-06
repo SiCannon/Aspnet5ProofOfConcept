@@ -20,5 +20,9 @@
 
     "frameworks": {
         "dnx451": { }
-    }
+    },
+
+    "exclude": [
+        "node_modules"
+    ]
 }

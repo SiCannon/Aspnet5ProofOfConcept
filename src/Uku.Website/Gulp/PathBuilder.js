@@ -1,4 +1,6 @@
-﻿module.exports = PathBuilder;
+﻿if (typeof(module) !== "undefined") {
+    module.exports = PathBuilder;
+}
 
 function PathNode(name, folder, children) {
     var self = this;
@@ -14,12 +16,22 @@ function PathNode(name, folder, children) {
         self.$children.map(function (node) {
             node.$parent = self;
             node.$fixup();
+            node.$parent["$" + node.$name] = node.$$path();
+            node.$parent[node.$name + "$"] = node.$folder;
         });
         return self;
     };
-    self.$path = function () {
-        return self.$parent ? self.$parent.$path() + "/" + self.$folder : self.$folder;
+    self.$$path = function () {
+        if (isArray()) {
+            return self.$parent ? self.$folder.map(function (f) { return self.$parent.$$path() + "/" + f; }) : self.$folder;
+        }
+        else {
+            return self.$parent ? self.$parent.$$path() + "/" + self.$folder : self.$folder;
+        }
     };
+    function isArray() {
+        return Object.prototype.toString.call(self.$folder) === '[object Array]';
+    }
 }
 
 function PathBuilder() {

@@ -17,7 +17,7 @@ namespace Uku.BusinessLogic.Implement
 
         public List<Album> GetAll()
         {
-            return context.Albums.ToList();
+            return context.Albums.OrderBy(x => x.Title).ToList();
         }
 
 
